@@ -3,7 +3,7 @@ import { Child } from "./child";
 
 export interface Parent {
   name: string;
-  children: Array<Child>;
+  children: Array<Child | mongoose.Types.ObjectId>;
 }
 
 const parentSchema = new mongoose.Schema<Parent>({
