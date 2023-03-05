@@ -51,7 +51,7 @@ const createParentFromChildIds = async (
   name: string,
   childIds: Array<mongoose.Types.ObjectId>
 ): Promise<HydratedDocument<Parent>> => {
-  const parent = new ParentModel({ name, childIds });
+  const parent = new ParentModel({ name, children: childIds });
   await parent.save();
   return parent;
 };
@@ -67,10 +67,10 @@ const main = async (): Promise<number> => {
   const toby = await findChildByName("Toby");
   console.log("Person found", toby);
 
-  const echoMarcus = await createParent("Marcus", [echoToby]);
+  const echoMarcus = await createParent("Marcus", [toby]);
   console.log("Parent saved with children", echoMarcus);
 
-  const echoAviva = await createParent("Aviva", [echoToby]);
+  const echoAviva = await createParentFromChildIds("Aviva", [toby._id]);
   console.log("Aviva saved with children", echoAviva);
 
   const marcus = await ParentModel.findOne({ name: "Marcus" });
@@ -81,12 +81,17 @@ const main = async (): Promise<number> => {
     await marcus.populate("children");
     console.log("Parent populated", marcus);
 
-    let foundMarcusChild = marcus.children[0];
+    let foundMarcusChild: mongoose.Types.ObjectId | HydratedDocument<Child> =
+      marcus.children[0];
     if (!isPopulated(foundMarcusChild)) {
+      console.log("Not populated");
       foundMarcusChild = await findChildByName("Toby");
       console.log();
     }
-    foundMarcusChild.name = "Tobias";
+    if (isPopulated(foundMarcusChild)) {
+      console.log("Now populated");
+      foundMarcusChild.name = "Tobias";
+    }
     const result = await (await findChild({ _id: childId })).save();
     console.log("Child populated and then searched for was saved", result);
   }
@@ -95,7 +100,7 @@ const main = async (): Promise<number> => {
   console.log("Saving a new child", await bryn.save());
   const marcus2 = await ParentModel.findOne({ name: "Marcus" });
   if (marcus2) {
-    marcus2.children.push(bryn);
+    marcus2.children.push(bryn._id);
     await marcus2.save();
     console.log("Saved with child added by ID", marcus2);
   }

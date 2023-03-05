@@ -1,9 +1,8 @@
 import mongoose from "mongoose";
-import { Child } from "./child";
 
 export interface Parent {
   name: string;
-  children: Array<Child | mongoose.Types.ObjectId>;
+  children: Array<mongoose.Types.ObjectId>;
 }
 
 const parentSchema = new mongoose.Schema<Parent>({
