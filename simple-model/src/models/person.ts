@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import { Cat } from "./pet";
 import { Hobby } from "./pasttime";
 
-let staticPersonCount = 0;
+const statics = { personCount: 0 };
 
 interface Address {
   street: string;
@@ -49,9 +49,9 @@ personSchema.static(
   "personCount",
   function personCount(count?: number): number {
     if (typeof count === "number") {
-      staticPersonCount = count;
+      statics.personCount = count;
     }
-    return staticPersonCount;
+    return statics.personCount;
   }
 );
 
