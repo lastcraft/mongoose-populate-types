@@ -44,10 +44,10 @@ const newMe = async (): Promise<HydratedDocument<Person>> => {
 
 const saveMe = async (me: HydratedDocument<Person>): Promise<void> => {
   await me.save();
-  PersonModel.personCount++;
+  PersonModel.personCount(PersonModel.personCount() + 1);
   console.log(
     "Person " +
-      PersonModel.personCount.toString() +
+      PersonModel.personCount().toString() +
       " " +
       me._id.toString() +
       " has been saved"

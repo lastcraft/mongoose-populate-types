@@ -84,7 +84,7 @@ const main = async (): Promise<number> => {
     let foundMarcusChild: mongoose.Types.ObjectId | HydratedDocument<Child> =
       marcus.children[0];
     if (!isPopulated(foundMarcusChild)) {
-      console.log("Not populated");
+      console.log("Not populated", marcus.children[0]);
       foundMarcusChild = await findChildByName("Toby");
       console.log();
     }

@@ -2,6 +2,8 @@ import mongoose from "mongoose";
 import { Cat } from "./pet";
 import { Hobby } from "./pasttime";
 
+let staticPersonCount = 0;
+
 interface Address {
   street: string;
   city?: string;
@@ -16,6 +18,7 @@ const addressSchema = new mongoose.Schema<Address>({
 
 export interface Person {
   name: string;
+  surname: string;
   nickname?: string;
   tags: Array<string>;
   pasttimes: Array<mongoose.Types.ObjectId>;
@@ -31,6 +34,7 @@ export interface PopulatedPerson
 
 const personSchema = new mongoose.Schema<Person>({
   name: { type: String, required: true },
+  surname: { type: String, required: true, default: "Baker" },
   nickname: { type: String, default: "sonny" },
   tags: { type: [String], default: [] },
   pasttimes: {
@@ -41,10 +45,28 @@ const personSchema = new mongoose.Schema<Person>({
   address: { type: addressSchema },
   cats: { type: [mongoose.Schema.Types.ObjectId], default: [], ref: "Cat" },
 });
+personSchema.static(
+  "personCount",
+  function personCount(count?: number): number {
+    if (typeof count === "number") {
+      staticPersonCount = count;
+    }
+    return staticPersonCount;
+  }
+);
 
-export const PersonModel = class PersonModel extends mongoose.model<Person>(
+// export const PersonModel = class PersonModel extends mongoose.model<Person>(
+//   "Person",
+//   personSchema
+// ) {
+//   static personCount = 0;
+// };
+
+interface PersonModelWithStatics extends mongoose.Model<Person> {
+  personCount(count?: number): number;
+}
+
+export const PersonModel = mongoose.model<Person, PersonModelWithStatics>(
   "Person",
   personSchema
-) {
-  static personCount = 0;
-};
+);
