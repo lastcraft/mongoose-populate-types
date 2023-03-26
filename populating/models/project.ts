@@ -1,13 +1,22 @@
 import mongoose from "mongoose";
+import { Person } from "./person";
+import { Account } from "./account";
 
 export interface Project {
   name: string;
-  accountId: mongoose.Types.ObjectId;
+  account: mongoose.Types.ObjectId;
+  team: Array<mongoose.Types.ObjectId>;
 }
+
+export type PopulatedProject = Project & {
+  account: Account;
+  team: mongoose.Types.DocumentArray<Person>;
+};
 
 const projectSchema = new mongoose.Schema<Project>({
   name: { type: String, required: true },
-  accountId: { type: mongoose.Schema.Types.ObjectId, ref: "Account" },
+  account: { type: mongoose.Schema.Types.ObjectId, ref: "Account" },
+  team: [{ type: mongoose.Schema.Types.ObjectId, ref: "Person" }],
 });
 
 export const ProjectModel = mongoose.model<Project>("Project", projectSchema);

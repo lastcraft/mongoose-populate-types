@@ -1,7 +1,7 @@
 import mongoose, { HydratedDocument } from "mongoose";
 import { Person, PersonModel } from "./models/person";
 import { Account, AccountModel } from "./models/account";
-import { Project, ProjectModel } from "./models/project";
+import { PopulatedProject, Project, ProjectModel } from "./models/project";
 
 const clearAll = async (): Promise<void> => {
   return new Promise((resolve) => resolve());
@@ -36,8 +36,8 @@ const createAccount = async (
 const createProject = async (
   name: string,
   accountId: mongoose.Types.ObjectId
-): Promise<HydratedDocument<Project> | null> => {
-  await new ProjectModel({ name, accountId }).save();
+): Promise<HydratedDocument<Project>> => {
+  await new ProjectModel({ name, account: accountId }).save();
   const project = await ProjectModel.findOne({ name });
   if (!project) {
     throw new Error("New Project not found");
@@ -47,9 +47,17 @@ const createProject = async (
 
 const getProject = async (
   ownerId: mongoose.Types.ObjectId
-): PopulatedProject => {};
+): Promise<PopulatedProject> => {
+  const project = await ProjectModel.findOne({ ownerId });
+  if (!project) {
+    throw new Error("New Project not found");
+  }
+  return await project.populate<PopulatedProject>("ownerId");
+};
 
-const showProject = (project: PopulatedProject): void => {};
+const showProject = (project: PopulatedProject): void => {
+  console.log(project.name);
+};
 
 const main = async (): Promise<number> => {
   await mongoose.connect("mongodb://localhost:27017/playpen");
