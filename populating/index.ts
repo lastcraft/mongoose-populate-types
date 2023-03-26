@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { Person } from "./models/person";
+import { Person, PersonModel } from "./models/person";
 import { Account } from "./models/account";
 import { Project } from "./models/project";
 
@@ -10,13 +10,19 @@ const clearAll = async (): Promise<void> => {
 const isPopulated = <T>(x: string | mongoose.Types.ObjectId | T): x is T =>
   !(x instanceof mongoose.Types.ObjectId) && typeof x !== "string";
 
-const createPerson = async (name: string): Promise<Person> => {};
+const createPerson = async (name: string): Promise<Person> => {
+  const person = new PersonModel({ name });
+  await person.save();
+  return person;
+};
 
 const createAccount = async (
+  name: string,
   ownerId: mongoose.Types.ObjectId
 ): Promise<Account> => {};
 
 const createProject = async (
+  name: string,
   accountId: mongoose.Types.ObjectId
 ): Promise<Project> => {};
 
@@ -32,8 +38,8 @@ const main = async (): Promise<number> => {
   await clearAll();
 
   const owner = await createPerson("Fred");
-  const account = await createAccount(owner._id);
-  const project = await createProject(account._id);
+  const account = await createAccount("Acme", owner._id);
+  const project = await createProject("Big idea", account._id);
   const member = await createPerson("Jane");
 
   showProject(await getProject(project._id));
