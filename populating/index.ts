@@ -25,7 +25,7 @@ const createAccount = async (
   name: string,
   ownerId: mongoose.Types.ObjectId
 ): Promise<HydratedDocument<Account>> => {
-  await new AccountModel({ name, ownerId }).save();
+  await new AccountModel({ name, owner: ownerId }).save();
   const account = await AccountModel.findOne({ name });
   if (!account) {
     throw Error("New Account not found");
@@ -48,11 +48,11 @@ const createProject = async (
 const getProject = async (
   ownerId: mongoose.Types.ObjectId
 ): Promise<PopulatedProject> => {
-  const project = await ProjectModel.findOne({ ownerId });
+  const project = await ProjectModel.findOne({ owner: ownerId });
   if (!project) {
     throw new Error("New Project not found");
   }
-  return await project.populate<PopulatedProject>("ownerId");
+  return await project.populate<PopulatedProject>("account");
 };
 
 const showProject = (project: PopulatedProject): void => {
