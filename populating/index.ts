@@ -1,4 +1,7 @@
-import mongoose, { HydratedDocument } from "mongoose";
+import mongoose from "mongoose";
+import { Person } from "./models/person";
+import { Account } from "./models/account";
+import { Project } from "./models/project";
 
 const clearAll = async (): Promise<void> => {
   return new Promise((resolve) => resolve());
