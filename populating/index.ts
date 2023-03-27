@@ -4,7 +4,9 @@ import { Account, AccountModel } from "./models/account";
 import { PopulatedProject, Project, ProjectModel } from "./models/project";
 
 const clearAll = async (): Promise<void> => {
-  return new Promise((resolve) => resolve());
+  await ProjectModel.deleteMany({});
+  await AccountModel.deleteMany({});
+  await PersonModel.deleteMany({});
 };
 
 const isPopulated = <T>(x: string | mongoose.Types.ObjectId | T): x is T =>
@@ -52,11 +54,14 @@ const getProject = async (
   if (!project) {
     throw new Error("New Project not found");
   }
-  return await project.populate<PopulatedProject>("account");
+  return await project.populate<PopulatedProject>("account team");
 };
 
 const showProject = (project: PopulatedProject): void => {
-  console.log(project.name);
+  console.log("Project name:", project.name);
+  console.log("Account", project.account);
+  console.log("Team...");
+  project.team.map(console.log);
 };
 
 const main = async (): Promise<number> => {
@@ -68,6 +73,8 @@ const main = async (): Promise<number> => {
   const account = await createAccount("Acme", owner._id);
   const project = await createProject("Big idea", account._id);
   const member = await createPerson("Jane");
+  project.team.push(member._id);
+  await project.save();
 
   showProject(await getProject(project._id));
 

@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { HydratedDocument } from "mongoose";
 import { Person } from "./person";
 import { Account } from "./account";
 
@@ -8,7 +8,7 @@ export interface Project {
   team: Array<mongoose.Types.ObjectId>;
 }
 
-export type PopulatedProject = Project & {
+export type PopulatedProject = HydratedDocument<Project> & {
   account: Account;
   team: mongoose.Types.DocumentArray<Person>;
 };
