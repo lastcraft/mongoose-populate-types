@@ -61,7 +61,7 @@ const showProject = (project: PopulatedProject): void => {
   console.log("Project name:", project.name);
   console.log("Account", project.account);
   console.log("Team...");
-  project.team.map(console.log);
+  project.team.map((x) => console.log(x));
 };
 
 const main = async (): Promise<number> => {
