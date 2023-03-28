@@ -54,11 +54,11 @@ const createProject = async (
 };
 
 const getProject = async (
-  ownerId: mongoose.Types.ObjectId
+  accountId: mongoose.Types.ObjectId
 ): Promise<WithTeam<WithAccount<HydratedDocument<Project>>>> => {
-  const project = await ProjectModel.findOne({ owner: ownerId });
+  const project = await ProjectModel.findOne({ account: accountId });
   if (!project) {
-    throw new Error("New Project not found");
+    throw new Error("Project not found");
   }
   return await project.populate<PopulatedProject>("account team");
 };
