@@ -8,10 +8,15 @@ export interface Project {
   team: Array<mongoose.Types.ObjectId>;
 }
 
-export type PopulatedProject = HydratedDocument<Project> & {
+export type WithAccount<T> = T & {
   account: Account;
+};
+
+export type WithTeam<T> = T & {
   team: mongoose.Types.DocumentArray<Person>;
 };
+
+export type PopulatedProject = WithTeam<WithAccount<HydratedDocument<Project>>>;
 
 const projectSchema = new mongoose.Schema<Project>({
   name: { type: String, required: true },
