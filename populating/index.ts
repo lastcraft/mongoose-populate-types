@@ -82,7 +82,7 @@ const main = async (): Promise<number> => {
   project.team.push(member._id);
   await project.save();
 
-  showProject(await getProject(project._id));
+  showProject(await getProject(project.account));
 
   await mongoose.disconnect();
   return 0;
