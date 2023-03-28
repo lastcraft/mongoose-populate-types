@@ -1,7 +1,13 @@
 import mongoose, { HydratedDocument } from "mongoose";
 import { Person, PersonModel } from "./models/person";
 import { Account, AccountModel } from "./models/account";
-import { PopulatedProject, Project, ProjectModel } from "./models/project";
+import {
+  PopulatedProject,
+  Project,
+  ProjectModel,
+  WithAccount,
+  WithTeam,
+} from "./models/project";
 
 const clearAll = async (): Promise<void> => {
   await ProjectModel.deleteMany({});
@@ -49,7 +55,7 @@ const createProject = async (
 
 const getProject = async (
   ownerId: mongoose.Types.ObjectId
-): Promise<PopulatedProject> => {
+): Promise<WithTeam<WithAccount<HydratedDocument<Project>>>> => {
   const project = await ProjectModel.findOne({ owner: ownerId });
   if (!project) {
     throw new Error("New Project not found");
