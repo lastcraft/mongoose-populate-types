@@ -2,7 +2,6 @@ import mongoose, { HydratedDocument } from "mongoose";
 import { Person, PersonModel } from "./models/person";
 import { Account, AccountModel } from "./models/account";
 import {
-  PopulatedProject,
   Project,
   ProjectModel,
   WithAccount,
@@ -60,10 +59,14 @@ const getProject = async (
   if (!project) {
     throw new Error("Project not found");
   }
-  return await project.populate<PopulatedProject>("account team");
+  return project.populate<WithTeam<WithAccount<HydratedDocument<Project>>>>(
+    "account team"
+  );
 };
 
-const showProject = (project: PopulatedProject): void => {
+const showProject = (
+  project: WithTeam<WithAccount<HydratedDocument<Project>>>
+): void => {
   console.log("Project name:", project.name);
   console.log("Account", project.account);
   console.log("Team...");
