@@ -13,12 +13,15 @@ interface PopulatableProject {
   team: mongoose.Types.DocumentArray<Person>;
 }
 
-export type PopulatedProject<Fields extends keyof PopulatableProject> = Omit<
-  HydratedDocument<Project>,
+type Populated<T, PopulatableT, Fields extends keyof PopulatableT> = Omit<
+  HydratedDocument<T>,
   Fields
 > & {
-  [key in Fields]: PopulatableProject[key];
+  [key in Fields]: PopulatableT[key];
 };
+
+export type PopulatedProject<Fields extends keyof PopulatableProject> =
+  Populated<Project, PopulatableProject, Fields>;
 
 export type WithAccount<T> = Omit<T, "account"> & {
   account: Account;
