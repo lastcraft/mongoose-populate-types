@@ -23,14 +23,6 @@ type Populated<T, PopulatableT, Fields extends keyof PopulatableT> = Omit<
 export type PopulatedProject<Fields extends keyof PopulatableProject> =
   Populated<Project, PopulatableProject, Fields>;
 
-export type WithAccount<T> = Omit<T, "account"> & {
-  account: Account;
-};
-
-export type WithTeam<T> = Omit<T, "team"> & {
-  team: mongoose.Types.DocumentArray<Person>;
-};
-
 const projectSchema = new mongoose.Schema<Project>({
   name: { type: String, required: true },
   account: { type: mongoose.Schema.Types.ObjectId, ref: "Account" },
