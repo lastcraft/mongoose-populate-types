@@ -1,21 +1,13 @@
 import mongoose, { HydratedDocument } from "mongoose";
 import { Person, PersonModel } from "./models/person";
 import { Account, AccountModel } from "./models/account";
-import {
-  Project,
-  ProjectModel,
-  WithAccount,
-  WithTeam,
-} from "./models/project";
+import { PopulatedProject, Project, ProjectModel } from "./models/project";
 
 const clearAll = async (): Promise<void> => {
   await ProjectModel.deleteMany({});
   await AccountModel.deleteMany({});
   await PersonModel.deleteMany({});
 };
-
-const isPopulated = <T>(x: string | mongoose.Types.ObjectId | T): x is T =>
-  !(x instanceof mongoose.Types.ObjectId) && typeof x !== "string";
 
 const createPerson = async (
   name: string
@@ -54,19 +46,15 @@ const createProject = async (
 
 const getProject = async (
   accountId: mongoose.Types.ObjectId
-): Promise<WithTeam<WithAccount<HydratedDocument<Project>>>> => {
+): Promise<PopulatedProject<"account" | "team">> => {
   const project = await ProjectModel.findOne({ account: accountId });
   if (!project) {
     throw new Error("Project not found");
   }
-  return project.populate<WithTeam<WithAccount<HydratedDocument<Project>>>>(
-    "account team"
-  );
+  return project.populate<PopulatedProject<"account" | "team">>("account team");
 };
 
-const showProject = (
-  project: WithTeam<WithAccount<HydratedDocument<Project>>>
-): void => {
+const showProject = (project: PopulatedProject<"account" | "team">): void => {
   console.log("Project name:", project.name);
   console.log("Account", project.account);
   console.log("Team...");
