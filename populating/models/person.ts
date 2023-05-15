@@ -1,11 +1,14 @@
 import mongoose from "mongoose";
 
-export interface Person {
+export interface PersonInterface {
   name: string;
 }
 
-const personSchema = new mongoose.Schema<Person>({
+const personSchema = new mongoose.Schema<PersonInterface>({
   name: { type: String, required: true },
 });
 
-export const PersonModel = mongoose.model<Person>("Person", personSchema);
+export const PersonModel = mongoose.model<PersonInterface>(
+  "Person",
+  personSchema
+);

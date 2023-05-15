@@ -1,32 +1,29 @@
 import mongoose, { HydratedDocument } from "mongoose";
-import { Person } from "./person";
-import { Account } from "./account";
+import { PersonInterface } from "./person";
+import { AccountInterface } from "./account";
+import { OptionallyPopulated } from "./optionally-populated";
 
-export interface Project {
+export interface ProjectInterface {
   name: string;
   account: mongoose.Types.ObjectId;
   team: Array<mongoose.Types.ObjectId>;
 }
 
 interface PopulatableProject {
-  account: Account;
-  team: mongoose.Types.DocumentArray<Person>;
+  account: HydratedDocument<AccountInterface>;
+  team: Array<HydratedDocument<PersonInterface>>;
 }
 
-type Populated<T, PopulatableT, Fields extends keyof PopulatableT> = Omit<
-  HydratedDocument<T>,
-  Fields
-> & {
-  [key in Fields]: PopulatableT[key];
-};
+export type Project<Fields extends keyof PopulatableProject = never> =
+  OptionallyPopulated<ProjectInterface, PopulatableProject, Fields>;
 
-export type PopulatedProject<Fields extends keyof PopulatableProject> =
-  Populated<Project, PopulatableProject, Fields>;
-
-const projectSchema = new mongoose.Schema<Project>({
+const projectSchema = new mongoose.Schema<ProjectInterface>({
   name: { type: String, required: true },
   account: { type: mongoose.Schema.Types.ObjectId, ref: "Account" },
   team: [{ type: mongoose.Schema.Types.ObjectId, ref: "Person" }],
 });
 
-export const ProjectModel = mongoose.model<Project>("Project", projectSchema);
+export const ProjectModel = mongoose.model<ProjectInterface>(
+  "Project",
+  projectSchema
+);

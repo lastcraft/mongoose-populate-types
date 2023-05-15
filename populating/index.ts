@@ -1,7 +1,7 @@
 import mongoose, { HydratedDocument } from "mongoose";
-import { Person, PersonModel } from "./models/person";
-import { Account, AccountModel } from "./models/account";
-import { PopulatedProject, Project, ProjectModel } from "./models/project";
+import { PersonInterface, PersonModel } from "./models/person";
+import { AccountInterface, AccountModel } from "./models/account";
+import { Project, ProjectInterface, ProjectModel } from "./models/project";
 
 const clearAll = async (): Promise<void> => {
   await ProjectModel.deleteMany({});
@@ -11,7 +11,7 @@ const clearAll = async (): Promise<void> => {
 
 const createPerson = async (
   name: string
-): Promise<HydratedDocument<Person>> => {
+): Promise<HydratedDocument<PersonInterface>> => {
   await new PersonModel({ name }).save();
   const person = await PersonModel.findOne({ name });
   if (!person) {
@@ -23,7 +23,7 @@ const createPerson = async (
 const createAccount = async (
   name: string,
   ownerId: mongoose.Types.ObjectId
-): Promise<HydratedDocument<Account>> => {
+): Promise<HydratedDocument<AccountInterface>> => {
   await new AccountModel({ name, owner: ownerId }).save();
   const account = await AccountModel.findOne({ name });
   if (!account) {
@@ -35,7 +35,7 @@ const createAccount = async (
 const createProject = async (
   name: string,
   accountId: mongoose.Types.ObjectId
-): Promise<HydratedDocument<Project>> => {
+): Promise<Project> => {
   await new ProjectModel({ name, account: accountId }).save();
   const project = await ProjectModel.findOne({ name });
   if (!project) {
@@ -44,17 +44,25 @@ const createProject = async (
   return project;
 };
 
+const createProjectWithAccount = async (
+  name: string,
+  account: AccountInterface
+): Promise<Project> => {
+  const project = await new ProjectModel({ name, account: account }).save();
+  return project;
+};
+
 const getProject = async (
   accountId: mongoose.Types.ObjectId
-): Promise<PopulatedProject<"account" | "team">> => {
+): Promise<Project<"account" | "team">> => {
   const project = await ProjectModel.findOne({ account: accountId });
   if (!project) {
     throw new Error("Project not found");
   }
-  return project.populate<PopulatedProject<"account" | "team">>("account team");
+  return project.populate<Project<"account" | "team">>("account team");
 };
 
-const showProject = (project: PopulatedProject<"account" | "team">): void => {
+const showProject = (project: Project<"account" | "team">): void => {
   console.log("Project name:", project.name);
   console.log("Account", project.account);
   console.log("Team...");
