@@ -76,7 +76,8 @@ const main = async (): Promise<number> => {
 
   const owner = await createPerson("Fred");
   const account = await createAccount("Acme", owner._id);
-  const project = await createProject("Big idea", account._id);
+  const project = await createProjectWithAccount("Big idea", account);
+  console.log(">>>>", project);
   const member = await createPerson("Jane");
   project.team.push(member._id);
   await project.save();
