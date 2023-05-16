@@ -1,4 +1,4 @@
-import mongoose, { HydratedDocument } from "mongoose";
+import mongoose, { HydratedDocument, LeanDocument } from "mongoose";
 import { Child, ChildModel } from "./models/child";
 import { Parent, ParentModel } from "./models/parent";
 
@@ -25,6 +25,26 @@ const findChild = async (
   return child;
 };
 
+const findObjectChild = async (
+  query: mongoose.FilterQuery<Child>
+): Promise<Child & { _id: mongoose.Types.ObjectId }> => {
+  const child = await ChildModel.findOne(query).lean().exec();
+  if (!child) {
+    throw new Error("Not found");
+  }
+  return child;
+};
+
+const findLeanChild = async (
+  query: mongoose.FilterQuery<Child>
+): Promise<LeanDocument<HydratedDocument<Child>>> => {
+  const child = await ChildModel.findOne(query).lean().exec();
+  if (!child) {
+    throw new Error("Not found");
+  }
+  return child;
+};
+
 const createParent = async (
   name: string,
   children: Array<HydratedDocument<Child>>
@@ -38,6 +58,27 @@ const main = async (): Promise<number> => {
   await mongoose.connect("mongodb://localhost:27017/playpen");
   console.log("Connected");
   await clearAll();
+
+  const child = await createChild("Bryn");
+  console.log("Type:", child.constructor.name);
+  console.log("Model:", child);
+  console.log("Object:", child.toObject());
+  console.log("Object ID:", child.toObject()._id);
+  console.log("Object ID string:", child.toObject()._id.toString());
+  child.age = 18;
+  await child.save();
+
+  await createChild("Toby");
+  const leanChild = await findLeanChild({ name: "Toby" });
+  if (leanChild) {
+    console.log("Type:", leanChild.constructor.name);
+    console.log("Lean:", leanChild);
+  }
+  const objectChild = await findLeanChild({ name: "Toby" });
+  if (objectChild) {
+    console.log("Type:", objectChild.constructor.name);
+    console.log("Object:", objectChild);
+  }
 
   await mongoose.disconnect();
   return 0;
