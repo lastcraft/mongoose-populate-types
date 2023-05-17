@@ -84,9 +84,9 @@ const main = async (): Promise<number> => {
   console.log(await createFireman("fred", 451));
   console.log(await createTeacher("tess", 1));
   const fred = await findCareer({ name: "fred" });
-  if (fred && fred.type == "F") {
+  if (fred) {
     console.log(fred);
-    console.log(fred.temperature);
+    // console.log(fred.temperature);
   }
 
   await mongoose.disconnect();
