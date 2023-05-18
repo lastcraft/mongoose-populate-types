@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 export interface Career {
   name: string;
-  type: "C";
+  type: "F" | "T";
 }
 
 const careerSchema = new mongoose.Schema<Career>({
