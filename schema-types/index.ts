@@ -5,10 +5,8 @@ const clearAll = async (): Promise<void> => {
   await AModel.deleteMany({});
 };
 
-const createA = async (name: string): Promise<HydratedDocument<A>> => {
-  const career = new AModel({
-    name: name,
-  });
+const createA = async (contents: A): Promise<HydratedDocument<A>> => {
+  const career = new AModel(contents);
   await career.save();
   return career;
 };
@@ -28,7 +26,7 @@ const main = async (): Promise<number> => {
   console.log("Connected");
   await clearAll();
 
-  console.log(await createA("aaa"));
+  console.log(await createA({ name: "aaa", bObject: { s: "bbb", n: 1 } }));
   const a = await findA({ name: "aaa" });
   if (a) {
     console.log(a);
