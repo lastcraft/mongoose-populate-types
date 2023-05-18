@@ -47,6 +47,15 @@ const main = async (): Promise<number> => {
     console.log(a3.cObject?.s);
   }
 
+  console.log(
+    await createA({ name: "a4", bObject: { s: "b4" }, dObject: { s: "d4" } })
+  );
+  const a4 = await findA({ name: "a4" });
+  if (a4) {
+    console.log(a4);
+    console.log(a4.dObject?.s);
+  }
+
   await mongoose.disconnect();
   return 0;
 };
