@@ -27,16 +27,12 @@ const main = async (): Promise<number> => {
   await clearAll();
 
   console.log(await createA({ name: "a1", anObject: { s: "b1", n: 1 } }));
-  const a1 = await findA({ name: "a1" });
-  if (a1) {
-    console.log(a1);
-  }
+  const a1 = (await findA({ name: "a1" }))!;
+  console.log(a1);
 
   console.log(await createA({ name: "a2", anObject: { s: "b2" } }));
-  const a2 = await findA({ name: "a2" });
-  if (a2) {
-    console.log(a2);
-  }
+  const a2 = (await findA({ name: "a2" }))!;
+  console.log(a2);
 
   await mongoose.disconnect();
   return 0;
