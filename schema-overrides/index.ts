@@ -35,6 +35,8 @@ const main = async (): Promise<number> => {
   const a2 = (await findA({ name: "a2" }))!;
   console.log("Hydrated:", a2);
   console.log("JSON:", a2.toJSON());
+  const a2j: A = a2.toJSON();
+  console.log("A:", a2j);
 
   await mongoose.disconnect();
   return 0;

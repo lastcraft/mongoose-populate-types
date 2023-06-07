@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { HydratedDocument } from "mongoose";
 
 export interface A {
   name: string;
@@ -13,7 +13,10 @@ const aSchema = new mongoose.Schema<A>({
 });
 
 aSchema.set("toJSON", {
-  transform: (before: A, after: A & { transformed: boolean }) => {
+  transform: (
+    before: HydratedDocument<A>,
+    after: Record<string, string | number | object | boolean>
+  ) => {
     after.transformed = true;
   },
 });
