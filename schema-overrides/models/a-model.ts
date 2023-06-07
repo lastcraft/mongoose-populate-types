@@ -12,4 +12,10 @@ const aSchema = new mongoose.Schema<A>({
   anObject: { s: String, n: { type: Number, required: false } },
 });
 
+aSchema.set("toJSON", {
+  transform: (before: A, after: A & { transformed: boolean }) => {
+    after.transformed = true;
+  },
+});
+
 export const AModel = mongoose.model<A>("A", aSchema);

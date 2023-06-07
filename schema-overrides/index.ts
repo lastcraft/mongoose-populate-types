@@ -28,11 +28,13 @@ const main = async (): Promise<number> => {
 
   console.log(await createA({ name: "a1", anObject: { s: "b1", n: 1 } }));
   const a1 = (await findA({ name: "a1" }))!;
-  console.log(a1);
+  console.log("Hydrated:", a1);
+  console.log("JSON:", a1.toJSON());
 
   console.log(await createA({ name: "a2", anObject: { s: "b2" } }));
   const a2 = (await findA({ name: "a2" }))!;
-  console.log(a2);
+  console.log("Hydrated:", a2);
+  console.log("JSON:", a2.toJSON());
 
   await mongoose.disconnect();
   return 0;
