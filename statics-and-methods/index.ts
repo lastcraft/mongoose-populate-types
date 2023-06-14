@@ -38,10 +38,12 @@ const main = async (): Promise<number> => {
   console.log("Connected");
   await clearAll();
 
+  console.log("Salutations: ", EnhancedModel.salutations());
+
   console.log(await createEnhanced({ name: "fred", sex: "M" }));
   const enhanced = (await findEnhanced({ name: "fred" }))!;
   console.log("Fred:", enhanced);
-  console.log("nickname():", enhanced.nickname());
+  console.log("nickname():", enhanced.formally());
 
   await mongoose.disconnect();
   return 0;

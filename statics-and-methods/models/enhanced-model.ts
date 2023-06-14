@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const salutations = { M: "Mr.", F: "Ms." };
+const allSalutations = { M: "Mr.", F: "Ms." };
 
 interface EnhancedFields {
   name: string;
@@ -11,9 +11,13 @@ interface EnhancedMethods {
   formally(): string;
 }
 
+// Cleanest interface I could manage
 export type Enhanced = EnhancedFields & EnhancedMethods;
 
-type EnhancedType = mongoose.Model<EnhancedFields, {}, EnhancedMethods>;
+interface EnhancedType
+  extends mongoose.Model<EnhancedFields, {}, EnhancedMethods> {
+  salutations(): Record<string, string>;
+}
 
 const enhancedSchema = new mongoose.Schema<EnhancedFields>({
   name: { type: String, required: true },
@@ -21,7 +25,11 @@ const enhancedSchema = new mongoose.Schema<EnhancedFields>({
 });
 
 enhancedSchema.method("formally", function formally() {
-  return salutations[this.sex] + " " + this.name;
+  return allSalutations[this.sex] + " " + this.name;
+});
+
+enhancedSchema.static("salutations", function salutations() {
+  return allSalutations;
 });
 
 export const EnhancedModel = mongoose.model<EnhancedFields, EnhancedType>(
