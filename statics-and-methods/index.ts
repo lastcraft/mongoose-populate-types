@@ -1,16 +1,25 @@
 import mongoose, { HydratedDocument } from "mongoose";
 import { Enhanced, EnhancedModel } from "./models/enhanced-model";
 
+type NonFunctionKeyNames<T> = Exclude<
+  {
+    [key in keyof T]: T[key] extends Function ? never : key;
+  }[keyof T],
+  undefined
+>;
+
+type JustFields<T> = Pick<T, NonFunctionKeyNames<T>>;
+
 const clearAll = async (): Promise<void> => {
   await EnhancedModel.deleteMany({});
 };
 
 const createEnhanced = async (
-  contents: Enhanced
+  contents: JustFields<Enhanced>
 ): Promise<HydratedDocument<Enhanced>> => {
-  const career = new EnhancedModel(contents);
-  await career.save();
-  return career;
+  const enhanced = new EnhancedModel(contents);
+  await enhanced.save();
+  return enhanced;
 };
 
 const findEnhanced = async (
@@ -28,10 +37,10 @@ const main = async (): Promise<number> => {
   console.log("Connected");
   await clearAll();
 
-  console.log(await createEnhanced({ name: "a1" }));
-  const enhanced = (await findEnhanced({ name: "a1" }))!;
-  console.log("Hydrated:", enhanced);
-  console.log("JSON:", enhanced.toJSON());
+  console.log(await createEnhanced({ name: "fred", sex: "M" }));
+  const enhanced = (await findEnhanced({ name: "fred" }))!;
+  console.log("Fred:", enhanced);
+  console.log("nickname():", enhanced.nickname());
 
   await mongoose.disconnect();
   return 0;
