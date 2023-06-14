@@ -3,6 +3,7 @@ import { Enhanced, EnhancedModel } from "./models/enhanced-model";
 
 type NonFunctionKeyNames<T> = Exclude<
   {
+    // eslint-disable-next-line @typescript-eslint/ban-types
     [key in keyof T]: T[key] extends Function ? never : key;
   }[keyof T],
   undefined

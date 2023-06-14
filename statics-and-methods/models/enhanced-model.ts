@@ -1,12 +1,14 @@
 import mongoose from "mongoose";
 
+const salutations = { M: "Mr.", F: "Ms." };
+
 interface EnhancedFields {
   name: string;
   sex: "M" | "F";
 }
 
 interface EnhancedMethods {
-  nickname(): string;
+  formally(): string;
 }
 
 export type Enhanced = EnhancedFields & EnhancedMethods;
@@ -18,8 +20,8 @@ const enhancedSchema = new mongoose.Schema<EnhancedFields>({
   sex: { type: String, required: true },
 });
 
-enhancedSchema.method("nickname", function nickname() {
-  return this.sex === "M" ? "Mr. " + this.name : "Ms. " + this.name;
+enhancedSchema.method("formally", function formally() {
+  return salutations[this.sex] + " " + this.name;
 });
 
 export const EnhancedModel = mongoose.model<EnhancedFields, EnhancedType>(
