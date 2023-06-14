@@ -15,7 +15,7 @@ const aSchema = new mongoose.Schema<A>({
 aSchema.set("toJSON", {
   transform: (
     before: HydratedDocument<A>,
-    after: Record<string, string | number | object | boolean>
+    after: A & { transformed: boolean }
   ) => {
     after.transformed = true;
   },
