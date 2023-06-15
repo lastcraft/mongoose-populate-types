@@ -9,6 +9,7 @@ interface EnhancedFields {
 
 interface EnhancedMethods {
   formally(): string;
+  title(): string;
 }
 
 // Cleanest interface I could manage
@@ -24,8 +25,12 @@ const enhancedSchema = new mongoose.Schema<EnhancedFields>({
   sex: { type: String, required: true },
 });
 
+enhancedSchema.method("title", function formally() {
+  return EnhancedModel.salutations()[this.sex];
+});
+
 enhancedSchema.method("formally", function formally() {
-  return allSalutations[this.sex] + " " + this.name;
+  return this.title() + " " + this.name;
 });
 
 enhancedSchema.static("salutations", function salutations() {
