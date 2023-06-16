@@ -30,7 +30,9 @@ const enhancedSchema = new mongoose.Schema<EnhancedFields>(
       title: function title(this: mongoose.HydratedDocument<Enhanced>): string {
         return EnhancedModel.salutations()[this.sex];
       },
-      formally: function formally(this: mongoose.HydratedDocument<Enhanced>) {
+      formally: function formally(
+        this: mongoose.HydratedDocument<Enhanced>
+      ): string {
         return this.title() + " " + this.name;
       },
     },
