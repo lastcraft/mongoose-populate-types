@@ -20,18 +20,30 @@ interface EnhancedType
   salutations(): Record<string, string>;
 }
 
-const enhancedSchema = new mongoose.Schema<EnhancedFields>({
-  name: { type: String, required: true },
-  sex: { type: String, required: true },
-});
+const enhancedSchema = new mongoose.Schema<EnhancedFields>(
+  {
+    name: { type: String, required: true },
+    sex: { type: String, required: true },
+  },
+  {
+    methods: {
+      title: function title(this: mongoose.HydratedDocument<Enhanced>): string {
+        return EnhancedModel.salutations()[this.sex];
+      },
+      formally: function formally(this: mongoose.HydratedDocument<Enhanced>) {
+        return this.title() + " " + this.name;
+      },
+    },
+  }
+);
 
-enhancedSchema.method("title", function formally() {
-  return EnhancedModel.salutations()[this.sex];
-});
-
-enhancedSchema.method("formally", function formally() {
-  return this.title() + " " + this.name;
-});
+// enhancedSchema.method("title", function title(): string {
+//   return EnhancedModel.salutations()[this.sex];
+// });
+//
+// enhancedSchema.method("formally", function formally() {
+//   return this.title() + " " + this.name;
+// });
 
 enhancedSchema.static("salutations", function salutations() {
   return allSalutations;
