@@ -36,9 +36,14 @@ const createParent = async (
 
 const createParentFromChildIds = async (
   name: string,
-  childIds: Array<mongoose.Types.ObjectId>
+  childIds: Array<mongoose.Types.ObjectId>,
+  fosterChildIds: Array<mongoose.Types.ObjectId>
 ): Promise<HydratedDocument<Parent>> => {
-  const parent = new ParentModel({ name, children: childIds });
+  const parent = new ParentModel({
+    name,
+    children: childIds,
+    fosterChildren: fosterChildIds,
+  });
   await parent.save();
   return parent;
 };
@@ -47,6 +52,23 @@ const main = async (): Promise<number> => {
   await mongoose.connect("mongodb://localhost:27017/playpen");
   console.log("Connected");
   await clearAll();
+
+  const children = [
+    (await createChild("Albert"))._id,
+    (await createChild("Bethany"))._id,
+  ];
+  const fosterChildren = [
+    (await createChild("Charlie"))._id,
+    (await createChild("Davina"))._id,
+  ];
+
+  const createdParent = await createParentFromChildIds(
+    "Mum",
+    children,
+    fosterChildren
+  );
+
+  console.log("createdParent >>>", createdParent);
 
   await mongoose.disconnect();
   return 0;
