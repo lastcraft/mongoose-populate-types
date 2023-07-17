@@ -1,6 +1,6 @@
 import mongoose, { HydratedDocument } from "mongoose";
 import { Child, ChildModel } from "./models/child";
-import { Parent, ParentModel } from "./models/parent";
+import { Parent, ParentModel, PopulatedParent } from "./models/parent";
 
 const clearAll = async (): Promise<void> => {
   await ChildModel.deleteMany({});
@@ -48,6 +48,12 @@ const createParentFromChildIds = async (
   return parent;
 };
 
+const findParent = async (
+  name: string
+): Promise<HydratedDocument<PopulatedParent> | null> => {
+  return ParentModel.findOne({ name }).populate("children fosterChildren");
+};
+
 const main = async (): Promise<number> => {
   await mongoose.connect("mongodb://localhost:27017/playpen");
   console.log("Connected");
@@ -69,6 +75,11 @@ const main = async (): Promise<number> => {
   );
 
   console.log("createdParent >>>", createdParent);
+
+  const foundParent = await findParent("Mum");
+  if (foundParent) {
+    console.log("foundParent >>>", foundParent);
+  }
 
   await mongoose.disconnect();
   return 0;
