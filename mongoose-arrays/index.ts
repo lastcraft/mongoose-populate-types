@@ -73,12 +73,34 @@ const main = async (): Promise<number> => {
     children,
     fosterChildren
   );
+  const childId = (await createChild("William"))._id;
+  createdParent.children.push(childId);
+  await createdParent.save();
 
   console.log("createdParent >>>", createdParent);
 
   const foundParent = await findParent("Mum");
   if (foundParent) {
     console.log("foundParent >>>", foundParent);
+  } else {
+    throw new Error("Ouch");
+  }
+
+  const child = await createChild("Xyla");
+  const fosterChildId = (await createChild("Yusef"))._id;
+  const fosterChild = await createChild("Zebedee");
+
+  foundParent.children.push(child);
+  foundParent.fosterChildren.push(fosterChildId);
+  foundParent.fosterChildren.push(fosterChild);
+  await foundParent.save();
+  console.log("foundParent after save >>>", foundParent);
+
+  const foundParent2 = await findParent("Mum");
+  if (foundParent) {
+    console.log("foundParent2 >>>", foundParent2);
+  } else {
+    throw new Error("Ouch");
   }
 
   await mongoose.disconnect();
