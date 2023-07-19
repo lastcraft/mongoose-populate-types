@@ -92,7 +92,10 @@ const main = async (): Promise<number> => {
 
   foundParent.children.push(child);
   foundParent.fosterChildren.push(fosterChildId);
-  foundParent.fosterChildren.push(fosterChild);
+  foundParent.fosterChildren.set(
+    foundParent.fosterChildren.length,
+    fosterChild
+  );
   await foundParent.save();
   console.log("foundParent after save >>>", foundParent);
 

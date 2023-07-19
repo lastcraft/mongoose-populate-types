@@ -8,7 +8,7 @@
     "build": "tsc"
   },
   "dependencies": {
-    "mongoose": "^6.5.2"
+    "mongoose": "^7.4.0"
   },
   "devDependencies": {
     "tsc": "^2.0.4",
