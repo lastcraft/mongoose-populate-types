@@ -92,10 +92,8 @@ const main = async (): Promise<number> => {
 
   foundParent.children.push(child);
   foundParent.fosterChildren.push(fosterChildId);
-  foundParent.fosterChildren.set(
-    foundParent.fosterChildren.length,
-    fosterChild
-  );
+  foundParent.fosterChildren.addToSet(fosterChild);
+  foundParent.fosterChildren.addToSet(fosterChild._id); // This should not happen
   await foundParent.save();
   console.log("foundParent after save >>>", foundParent);
 
