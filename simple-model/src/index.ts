@@ -113,7 +113,21 @@ const main = async (): Promise<number> => {
   if (person) {
     showMe(person);
     const samePerson = await findMeAgain({ _id: person._id.toString() });
-    console.log("Back again:", samePerson);
+    if (samePerson) {
+      console.log("Back again:", samePerson);
+      console.log(
+        "Do ObjectIds compare == equal?",
+        person._id == samePerson._id
+      );
+      console.log(
+        "Do ObjectIds compare === equal?",
+        person._id === samePerson._id
+      );
+      console.log(
+        "Do ObjectIds compare as string equal?",
+        person._id.toString() === samePerson._id.toString()
+      );
+    }
   }
   await mongoose.disconnect();
   return 0;
